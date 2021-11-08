@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  mosquitto:
+    build: ./mosquitto
+    ports:
+      - 1883:1883
+  # publisher:
+  #   build: ./publisher
+  #   environment:
+  #     - HOST=mosquitto
+  #     - PORT=1883
+  #     - TOPIC=test
+  # mqtt_logger:
+  #   build: ./mqtt_logger
+  #   environment:
+  #     - HOST=mosquitto
+  #     - PORT=1883
+  #     - INPUT_TOPIC=test
+  #     - OUTPUT_TOPIC=ans
+
+  # jobmanager:
+  #   image: flink:1.13
+  #   ports:
+  #     - "8081:8081"
+  #   command: jobmanager
+  #   environment:
+  #     - |
+  #       FLINK_PROPERTIES=
+  #       jobmanager.rpc.address: jobmanager
+  # taskmanager:
+  #   image: flink:1.13
+  #   depends_on:
+  #     - jobmanager
+  #   command: taskmanager
+  #   scale: 1
+  #   environment:
+  #     - |
+  #       FLINK_PROPERTIES=
+  #       jobmanager.rpc.address: jobmanager
+  #       taskmanager.numberOfTaskSlots: 2
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8080:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
